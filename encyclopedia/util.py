@@ -73,16 +73,13 @@ def markdown_lite(text):
         return f"<h{header_lvl}>{match.group(2)}</h{header_lvl}>"
 
 
-    modified_text = re.sub(r"^(#+)(.*)$", create_headers, text, flags=re.MULTILINE)
+    modified_text = re.sub(r"^(#+)(.*?)$", create_headers, text, flags=re.MULTILINE)
 
     # uses regular expresions to bolden ('<b></b>') text between two underscores (_) or stars (*)
     # https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#styling-text
     modified_text = re.sub(r"[*_]{2}(.*?)[*_]{2}", "<b>\\1</b>", modified_text)
 
-    # uses regulare expresions to insert a paragraph ('<p></p>') if there is an empty line in the text
-    # https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#paragraphs
-    
-    modified_text = re.sub(r"(\n\s*\n(.*)(?=\n\s*\n|$))", "<p>\\2</p>", modified_text, flags=re.DOTALL)
+
 
     # creates HTML links ('<a href="..."></a>') from markdown link syntax ([text to display](http_link))
     # https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#links
@@ -96,6 +93,7 @@ def markdown_lite(text):
 
     # creates unordered lists from markdown syntax ("You can make an unordered list by preceding one or more lines of text with -, *, or +")
     # https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#lists
+    
     def create_list_items(match):
         for group in match.groups():
             list_item ='<li>' + group + '</li>'
@@ -107,6 +105,10 @@ def markdown_lite(text):
     
     modified_text = re.sub(r"^[-*+](.*?)(?:\n|$)", create_list_items, modified_text, flags=re.MULTILINE)
     modified_text = re.sub(r"(<li>.*</li>)", create_list, modified_text)
+    
+    # uses regulare expresions to insert a paragraph ('<p></p>') if there is an empty line in the text
+    # https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#paragraphs
+    modified_text = re.sub(r"(\n\s*\n(.*?)(?=\n\s*\n|$))", "<p>\\2</p>", modified_text, flags=re.DOTALL)
 
     return modified_text
 
