@@ -104,7 +104,7 @@ def new_page(request):
                 util.save_entry(title, content)
 
         # after a new entry is saved we redirect the user to the index page
-        return HttpResponseRedirect(reverse("entry", args=[title]))
+        return HttpResponseRedirect(reverse("index"))
     
     # if the method was not POST (so it was GET), we render the new_page.html which contains the form (New_page_form) where 
     # the user can input the information for a new entry
